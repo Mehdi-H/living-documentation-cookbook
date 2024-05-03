@@ -4,17 +4,34 @@ A companion repo to my blog article
 
 ## Requirements
 
-- [charmbracelet/freeze](brew install charmbracelet/tap/freeze
+- 📸 [charmbracelet/freeze](brew install charmbracelet/tap/freeze
 ) : to create documentation from commands output
+- 🐳 [docker-compose](https://docs.docker.com/compose/install/) : to be able to run containers locally
 
 ## Getting started
 
-Run `make` or `make help` :
+Run `make` or `make help` 🔥
+
+## Documentation
+
+### Documenting usages
+
+Run `make` or `make help` in your terminal, or straight from this markdown file if your IDE allows it :
 
 ```sh
 make;
 ```
 
-It will list the available commands, and update the following image 👇
+This command will list the available commands, and it will also update the following image 👇
 
 ![Available commands generated automatically](./docs/available-commands.png)
+
+## Documenting the database
+
+![Database documentation](./docs/database/relationships.real.compact.png)
+
+Generate and update this schema with :
+
+```bash
+make database-documentation;
+```

@@ -1,0 +1,16 @@
+services:
+
+  postgres:
+    container_name: my_local_postgresql
+    image: postgres:15-alpine
+    restart: always
+    ports:
+      - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
+    volumes:
+    # With the following volume, SQL init script is loaded on container start
+    # More info @ https://hub.docker.com/_/postgres > Initialization scripts
+      - "./init_scripts/:/docker-entrypoint-initdb.d"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-local_db}
+      POSTGRES_USER: ${POSTGRES_USER:-local_dev}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-toto}

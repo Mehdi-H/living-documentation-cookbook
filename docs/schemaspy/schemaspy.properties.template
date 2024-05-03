@@ -1,0 +1,7 @@
+schemaspy.t=pgsql
+schemaspy.host=${POSTGRES_HOST}
+schemaspy.port=${POSTGRES_PORT}
+schemaspy.db=${POSTGRES_DB}
+schemaspy.u=${POSTGRES_USER}
+schemaspy.p=${POSTGRES_PASSWORD}
+schemaspy.schemas=public

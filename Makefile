@@ -21,4 +21,40 @@ help:
 	echo "	- use tab for auto-completion"
 	echo "	- use the dry run option '-n' to show what make is attempting to do. example: environmentName=dev make -n deploy"
 	} | tee /dev/tty | freeze -o docs/available-commands.png
-	
+
+.PHONY: backing-services-start ## 🔌 start all the services consumed by our components through the network (aka backing services https://12factor.net/backing-services)
+backing-services-start:
+	docker compose \
+		-f backing_services/docker-compose.yml \
+		up -d --remove-orphans
+
+.PHONY: backing-services-stop ## ⏹️ stop all the services consumed by our components through the network (aka backing services https://12factor.net/backing-services)
+backing-services-stop:
+	docker compose -f backing_services/docker-compose.yml down
+
+.PHONY: connect-docker-psql ## 🔌🐳🐘 Connect to psql inside postgres' local docker
+connect-docker-psql:
+	docker exec -it my_local_postgresql psql -U local_dev local_db
+
+.PHONY: database-documentation  ## 🧫 Generate static HTML documentation of the database against a live db
+database-documentation: POSTGRES_HOST:=localhost
+database-documentation: POSTGRES_DB:=local_db
+database-documentation: POSTGRES_USER:=local_dev
+database-documentation: POSTGRES_PASSWORD:=toto
+database-documentation: POSTGRES_PORT:=5432
+database-documentation: backing-services-start
+	echo "[*] Generating database documentation with SchemaSpy based on ${POSTGRES_HOST} > ${POSTGRES_DB} db..."
+	echo "[*][*] Cleaning the slate @ file://$(CURDIR)/docs/schemaspy/docs/* ..."
+	rm -rf $(CURDIR)/docs/schemaspy/docs/*
+	echo "[*][*] Generating file://$(CURDIR)/docs/schemaspy/schemaspy.properties file ..."
+	envsubst < ./docs/schemaspy/schemaspy.properties.template > ./docs/schemaspy/schemaspy.properties
+	docker run --rm \
+		-v "./docs/schemaspy/docs/:/output:z" \
+		-v "./docs/schemaspy:/config" \
+		--network="host" \
+		schemaspy/schemaspy:latest -configFile /config/schemaspy.properties -noimplied -nopages -l -loglevel severe \
+			| sed 's,^,[🕵️ SchemaSpy] - ,'
+	echo "[*][*] Documentation generated @ file://$(CURDIR)/docs/schemaspy/docs/public/index.html ..."
+	cp $(CURDIR)/docs/schemaspy/docs/public/diagrams/summary/*.png $(CURDIR)/docs/database/
+	echo "[*][*] Schema copied for versioning @ file://$(CURDIR)/docs/database/ ..."
+	$(MAKE) backing-services-stop
