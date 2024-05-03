@@ -4,8 +4,7 @@ A companion repo to my blog article
 
 ## Requirements
 
-- 📸 [charmbracelet/freeze](brew install charmbracelet/tap/freeze
-) : to create documentation from commands output
+- 📸 [charmbracelet/freeze](https://github.com/charmbracelet/freeze) : to create documentation from commands output
 - 🐳 [docker-compose](https://docs.docker.com/compose/install/) : to be able to run containers locally
 
 ## Getting started
