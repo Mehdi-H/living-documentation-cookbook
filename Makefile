@@ -19,7 +19,7 @@ help:
 		awk 'BEGIN {FS = "(: |##)"}; {printf "\033[36m%-30s\033[0m %s\n", $$2, $$3}'
 	echo "Tips 💡"
 	echo "	- use tab for auto-completion"
-	echo "	- use the dry run option '-n' to show what make is attempting to do. example: environmentName=dev make -n deploy"
+	echo "	- use the dry run option '-n' to show what make is attempting to do. example: make -n backing-services-start"
 	} | tee /dev/tty | freeze -o docs/available-commands.png
 
 .PHONY: backing-services-start ## 🔌 start all the services consumed by our components through the network (aka backing services https://12factor.net/backing-services)
