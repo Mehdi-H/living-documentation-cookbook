@@ -22,18 +22,18 @@ help:
 	echo "	- use the dry run option '-n' to show what make is attempting to do. example: make -n backing-services-start"
 	} | tee /dev/tty | freeze -c full -o docs/available-commands.png
 
-.PHONY: backing-services-start ## 🔌 start all the services consumed by our components through the network (aka backing services https://12factor.net/backing-services)
+.PHONY: backing-services-start  ## 🔌 start all the services consumed by our components through the network (aka backing services https://12factor.net/backing-services)
 backing-services-start:
 	docker compose \
 		-f backing_services/docker-compose.yml \
 		up -d --remove-orphans
 
-.PHONY: backing-services-stop ## ⏹️ stop all the services consumed by our components through the network (aka backing services https://12factor.net/backing-services)
+.PHONY: backing-services-stop  ## ⏹️ stop all the services consumed by our components through the network (aka backing services https://12factor.net/backing-services)
 backing-services-stop:
 	docker compose -f backing_services/docker-compose.yml down
 
-.PHONY: connect-docker-psql ## 🔌🐳🐘 Connect to psql inside postgres' local docker
-connect-docker-psql:
+.PHONY: backing-services-db-connection  ## 🔌🐳🐘 Connect to the local db used by the app
+backing-services-db-connection:
 	docker exec -it my_local_postgresql psql -U local_dev local_db
 
 .PHONY: database-documentation  ## 🧫 Generate static HTML documentation of the database against a live db
@@ -58,3 +58,16 @@ database-documentation: backing-services-start
 	cp $(CURDIR)/docs/schemaspy/docs/public/diagrams/summary/*.png $(CURDIR)/docs/database/
 	echo "[*][*] Schema copied for versioning @ file://$(CURDIR)/docs/database/ ..."
 	$(MAKE) backing-services-stop
+
+.PHONY: python-dependencies  ## ⬇️ to download python dependencies
+python-dependencies:
+	cd coolcover_company && poetry install
+
+.PHONY: start-app  ## 🎬 to start the API locally
+start-app:
+	echo "[*] Starting the API locally ..."
+	echo "[*] 📖 According to your preference, API documentation will be available on:"
+	echo -e "\t* http://127.0.0.1:8000/docs"
+	echo -e "\t* or http://127.0.0.1:8000/redoc ..." 
+	cd coolcover_company && poetry run \
+		uvicorn src.coolcover_company.main:app --reload
