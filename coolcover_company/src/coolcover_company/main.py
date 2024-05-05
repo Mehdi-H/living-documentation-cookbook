@@ -1,4 +1,4 @@
-from coolcover_company.entities import Department
+from coolcover_company.entities import Department, DepartmentName
 from fastapi.responses import JSONResponse
 
 
@@ -8,7 +8,7 @@ app = FastAPI()
 
 
 DEPARTMENTS = [
-    Department(id=n, name=name) for n, name in zip([1, 2, 3], ["RH", "IT", "Finance"])
+    Department(id=n, name=name) for n, name in zip([1, 2, 3], [DepartmentName.RH, DepartmentName.IT, DepartmentName.FINANCE])
 ]
 
 
