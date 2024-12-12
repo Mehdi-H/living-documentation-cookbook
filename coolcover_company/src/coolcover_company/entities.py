@@ -9,7 +9,7 @@ class DepartmentName(StrEnum):
 
 
 class Department(BaseModel):
-    "We expect departments in our company to be defined as such 👇"
+    """We expect departments in our company to be defined as such 👇"""
     id: int = Field(..., description="Unique identifier for the department")
     name: DepartmentName = Field(..., description="Name of the department")
 

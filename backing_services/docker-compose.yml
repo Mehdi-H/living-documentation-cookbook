@@ -2,7 +2,7 @@ services:
 
   postgres:
     container_name: my_local_postgresql
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     restart: always
     ports:
       - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
