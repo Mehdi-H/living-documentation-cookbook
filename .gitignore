@@ -1,3 +1,5 @@
+.idea/
+
 # Database documentation
 docs/schemaspy/docs/**/*
 
