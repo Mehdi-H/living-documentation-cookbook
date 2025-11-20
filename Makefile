@@ -14,7 +14,7 @@ MAKEFLAGS += --silent
 .PHONY: help ## 🛟 to display this prompts. This will list all available targets with their documentation
 help:
 	{
-	echo "❓ Use \'make <target>' where <target> is one of 👇"
+	echo "❓ Use 'make <target>' where <target> is one of 👇"
 	grep -E '^\.PHONY: [a-zA-Z0-9_-]+ .*?##' $(MAKEFILE_LIST) | sort | \
 		awk 'BEGIN {FS = "(: |##)"}; {printf "\033[36m%-30s\033[0m %s\n", $$2, $$3}'
 	echo "Tips 💡"
