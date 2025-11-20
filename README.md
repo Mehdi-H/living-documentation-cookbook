@@ -23,7 +23,7 @@ A companion repo to my blog article
 - 🐳 [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/) : to run containers locally
 - 🐍 [Python](https://www.python.org/downloads/) : to run the sample FastAPI app and consult the dynamic OpenAPI (living) documentation
   - Take a look at [pyproject.toml](./coolcover_company/pyproject.toml) file to know what Python version is needed
-- 💐 [Poetry](https://python-poetry.org/) : to handle Python dependency management
+- ⚡️ [uv](https://docs.astral.sh/uv/) : to handle Python dependency management
 
 ## Getting started
 

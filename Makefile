@@ -62,11 +62,30 @@ database-documentation: backing-services-start
 	echo "[*][*] Schema copied for versioning @ file://$(CURDIR)/docs/database/ ..."
 	$(MAKE) backing-services-stop
 
-.PHONY: python-dependencies  ## ⬇️ to download python dependencies
-python-dependencies:
-	cd coolcover_company && poetry install
+.PHONY: app-dependencies  ## ⬇️ to download python dependencies
+app-dependencies:
+	cd coolcover_company && uv sync
+
+.PHONY: app-lint  ## 🔍 to lint the python codebase
+app-lint: app-dependencies
+	cd coolcover_company && uv run ruff check --fix .
+
+.PHONY: app-start  ## 🚀 to start the FastAPI application
+app-start: app-lint
+	cd coolcover_company && uv run uvicorn coolcover_company.main:app --reload
+
+app-start-check: PORT:=8000
+app-start-check: app-lint
+	@echo "[*] Starting app for a quick health check on port ${PORT} ..."
+	cd coolcover_company && uv run uvicorn coolcover_company.main:app --port ${PORT} &
+	sleep 2
+	echo "[*] Checking app health endpoint ..."
+	curl -f http://127.0.0.1:${PORT}/healthz || (echo "[!] App did not start correctly" && exit 1)
+	@echo "[*] App started correctly"
+	echo "[*] Killing app running on port ${PORT} ..."
+	lsof -t -i tcp:${PORT} | xargs kill -9
 
 .PHONY: data-contracts-documentation  ## 📦📜 to generate documentation for the data contracts
 data-contracts-documentation:
-	cd coolcover_company && poetry run python ../docs/data_contracts/main.py
+	cd coolcover_company && uv run python ../docs/data_contracts/main.py
 	echo "[*] Data contracts documentation generated @ file://$(CURDIR)/docs/data_contracts/generated_docs/Departments/department_specification.html ..."

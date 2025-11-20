@@ -1,22 +1,27 @@
-[tool.poetry]
+[project]
 name = "coolcover-company"
 version = "0.1.0"
 description = ""
-authors = ["Mehdi-H <mehdi.houacine7@gmail.com>"]
+authors = [
+    { name = "Mehdi-H", email = "mehdi.houacine7@gmail.com" }
+]
 readme = "README.md"
-packages = [{include = "coolcover_company", from = "src"}]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.111.0",
+    "pydantic>=2.7.1",
+    "uvicorn>=0.29.0",
+    "json-schema-for-humans>=1.0.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-fastapi = "^0.111.0"
-pydantic = "^2.7.1"
-uvicorn = "^0.29.0"
-json-schema-for-humans = "^1.0.0"
-
-
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.4.2"
+[dependency-groups]
+dev = [
+    "ruff>=0.4.2",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/coolcover_company"]
