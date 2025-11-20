@@ -24,6 +24,7 @@ help:
 
 .PHONY: backing-services-start  ## 🔌 to start all the services consumed by our components through the network (aka backing services https://12factor.net/backing-services)
 backing-services-start:
+	echo "[*] $@ ..."
 	docker compose \
 		-f backing_services/docker-compose.yml \
 		up -d --remove-orphans
@@ -56,6 +57,7 @@ database-documentation: backing-services-start
 		schemaspy/schemaspy:${SCHEMASPY_VERSION} -configFile /config/schemaspy.properties -noimplied -nopages -loglevel severe \
 			| sed 's,^,[🕵️ SchemaSpy] - ,'
 	echo "[*][*] Documentation generated @ file://$(CURDIR)/docs/schemaspy/docs/public/index.html ..."
+	sleep 2  # Sometimes, a little wait is needed for all files to be flushed to disk 🤷
 	cp $(CURDIR)/docs/schemaspy/docs/public/diagrams/summary/*.png $(CURDIR)/docs/database/
 	echo "[*][*] Schema copied for versioning @ file://$(CURDIR)/docs/database/ ..."
 	$(MAKE) backing-services-stop
