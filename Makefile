@@ -37,7 +37,7 @@ backing-services-db-connection:
 	docker exec -it my_local_postgresql psql -U local_dev local_db
 
 .PHONY: database-documentation  ## 🧫 to generate static HTML documentation of the database against a live db
-database-documentation: SCHEMASPY_VERSION:=6.2.4
+database-documentation: SCHEMASPY_VERSION:=7.0.2
 database-documentation: POSTGRES_HOST:=localhost
 database-documentation: POSTGRES_DB:=local_db
 database-documentation: POSTGRES_USER:=local_dev
@@ -53,7 +53,7 @@ database-documentation: backing-services-start
 		-v "./docs/schemaspy/docs/:/output:z" \
 		-v "./docs/schemaspy:/config" \
 		--network="host" \
-		schemaspy/schemaspy:${SCHEMASPY_VERSION} -configFile /config/schemaspy.properties -noimplied -nopages -l -loglevel severe \
+		schemaspy/schemaspy:${SCHEMASPY_VERSION} -configFile /config/schemaspy.properties -noimplied -nopages -loglevel severe \
 			| sed 's,^,[🕵️ SchemaSpy] - ,'
 	echo "[*][*] Documentation generated @ file://$(CURDIR)/docs/schemaspy/docs/public/index.html ..."
 	cp $(CURDIR)/docs/schemaspy/docs/public/diagrams/summary/*.png $(CURDIR)/docs/database/
