@@ -5,18 +5,17 @@ description = ""
 authors = [
     { name = "Mehdi-H", email = "mehdi.houacine7@gmail.com" }
 ]
-readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.111.0",
-    "pydantic>=2.7.1",
-    "uvicorn>=0.29.0",
-    "json-schema-for-humans>=1.0.0",
+    "fastapi>=0.121.3",
+    "pydantic>=2.12.4",
+    "uvicorn>=0.38.0",
+    "json-schema-for-humans>=1.4.1",
 ]
 
 [dependency-groups]
 dev = [
-    "ruff>=0.4.2",
+    "ruff>=0.14.5",
 ]
 
 [build-system]

@@ -80,6 +80,7 @@ app-start-check: app-lint
 	cd coolcover_company && uv run uvicorn coolcover_company.main:app --port ${PORT} &
 	sleep 2
 	echo "[*] Checking app health endpoint ..."
+	curl -f http://127.0.0.1:${PORT}/docs || (echo "[!] App did not start correctly" && exit 1)
 	curl -f http://127.0.0.1:${PORT}/healthz || (echo "[!] App did not start correctly" && exit 1)
 	@echo "[*] App started correctly"
 	echo "[*] Killing app running on port ${PORT} ..."
@@ -89,3 +90,6 @@ app-start-check: app-lint
 data-contracts-documentation:
 	cd coolcover_company && uv run python ../docs/data_contracts/main.py
 	echo "[*] Data contracts documentation generated @ file://$(CURDIR)/docs/data_contracts/generated_docs/Departments/department_specification.html ..."
+
+all-docs: database-documentation data-contracts-documentation app-start-check
+	echo "[*] All done!"
