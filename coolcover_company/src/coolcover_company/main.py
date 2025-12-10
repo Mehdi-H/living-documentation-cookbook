@@ -8,7 +8,10 @@ app = FastAPI()
 
 
 DEPARTMENTS = [
-    Department(id=n, name=name) for n, name in zip([1, 2, 3], [DepartmentName.RH, DepartmentName.IT, DepartmentName.FINANCE])
+    Department(id=n, name=name)
+    for n, name in zip(
+        [1, 2, 3], [DepartmentName.RH, DepartmentName.IT, DepartmentName.FINANCE]
+    )
 ]
 
 

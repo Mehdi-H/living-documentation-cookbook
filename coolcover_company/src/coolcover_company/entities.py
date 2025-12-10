@@ -1,15 +1,17 @@
 from enum import StrEnum
 from pydantic import BaseModel, Field
 
+
 class DepartmentName(StrEnum):
-    FINANCE="FINANCE"
-    IT="IT"
-    R_AND_D="R&D"
-    RH="RH"
+    FINANCE = "FINANCE"
+    IT = "IT"
+    R_AND_D = "R&D"
+    RH = "RH"
 
 
 class Department(BaseModel):
     """We expect departments in our company to be defined as such 👇"""
+
     id: int = Field(..., description="Unique identifier for the department")
     name: DepartmentName = Field(..., description="Name of the department")
 
