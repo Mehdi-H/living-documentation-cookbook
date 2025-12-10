@@ -57,7 +57,6 @@ database-documentation: backing-services-start
 		schemaspy/schemaspy:${SCHEMASPY_VERSION} -configFile /config/schemaspy.properties -noimplied -nopages -loglevel severe \
 			| sed 's,^,[🕵️ SchemaSpy] - ,'
 	echo "[*][*] Documentation generated @ file://$(CURDIR)/docs/schemaspy/docs/public/index.html ..."
-	sleep 2  # Sometimes, a little wait is needed for all files to be flushed to disk 🤷
 	cp $(CURDIR)/docs/schemaspy/docs/public/diagrams/summary/*.png $(CURDIR)/docs/database/
 	echo "[*][*] Schema copied for versioning @ file://$(CURDIR)/docs/database/ ..."
 	$(MAKE) backing-services-stop
@@ -84,6 +83,7 @@ app-format:
 
 .PHONY: app-start  ## 🚀 to start the FastAPI application
 app-start: app-dependencies-install app-lint
+	echo "[*] Starting app, it will be available @ http://127.0.0.1:8000/docs ..."
 	cd coolcover_company && uv run uvicorn coolcover_company.main:app --reload
 
 app-start-check: PORT:=8000
@@ -103,5 +103,19 @@ data-contracts-documentation:
 	cd coolcover_company && uv run python ../docs/data_contracts/main.py
 	echo "[*] Data contracts documentation generated @ file://$(CURDIR)/docs/data_contracts/generated_docs/Departments/department_specification.html ..."
 
-all-docs: database-documentation data-contracts-documentation app-start-check
+.PHONY: all-docs  ## 🪄📚 to generate all documentation artifacts at once
+all-docs: help database-documentation data-contracts-documentation app-start-check rest-api-documentation
 	echo "[*] All done!"
+
+.PHONY: rest-api-documentation  ## 🌐📜 to generate documentation for the web rest API
+rest-api-documentation: PORT:=8001
+rest-api-documentation: SPEC_URL:=http://127.0.0.1:${PORT}/openapi.json
+rest-api-documentation:
+	@echo "[*] Starting app for a quick health check on port ${PORT} ..."
+	cd coolcover_company && uv run uvicorn coolcover_company.main:app --port ${PORT} &
+	sleep 2
+	echo "[*] Download web API documentation based on OpenAPI spec from ${SPEC_URL} ..."
+	curl -f ${SPEC_URL} > $(CURDIR)/docs/rest_api/openapi.json || (echo "[!] App did not start correctly")
+	echo "[*] Killing app running on port ${PORT} ..."
+	lsof -t -i tcp:${PORT} | xargs kill -9
+	echo "[*] REST API documentation generated @ file://$(CURDIR)/docs/rest_api/openapi.json ..."

@@ -84,6 +84,12 @@ The API documentation will be automatically available at the following urls once
 |   ![](./docs/rest_api/openapi.png)   |     ![](./docs/rest_api/redoc.png)     |
 | [🔗 link](http://127.0.0.1:8000/docs) | [🔗  link](http://127.0.0.1:8000/redoc) |
 
+To download the JSON specification file and store it @ [openapi.json](./docs/rest_api/openapi.json), run : 
+
+```bash
+make rest-api-documentation;
+```
+
 #### How does it work
 
 - This documentation is automatically rendered from how the API is modelled in the code, 
@@ -94,7 +100,7 @@ The API documentation will be automatically available at the following urls once
 
 For whatever reason, you may need to exchange `Departments` data with other teams without the REST API, through CSV flat files for example.
 
-The JSON Schema specification can help define the interface contract between you and third parties (expected fields, constraints, etc ...) of the data you wille expose (or expected) through this file medium.
+The JSON Schema specification can help define the interface contract between you and third parties (expected fields, constraints, etc ...) of the data you will expose (or expect) through this file medium.
 
 You can generate such a document from the code, with the following command:
 
