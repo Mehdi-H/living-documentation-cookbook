@@ -62,16 +62,28 @@ database-documentation: backing-services-start
 	echo "[*][*] Schema copied for versioning @ file://$(CURDIR)/docs/database/ ..."
 	$(MAKE) backing-services-stop
 
-.PHONY: app-dependencies  ## ⬇️ to download python dependencies
-app-dependencies:
-	cd coolcover_company && uv sync
+.PHONY: app-dependencies-install  ## ⬇️ to download python dependencies
+app-dependencies-install:
+	cd coolcover_company && uv sync && uv lock
+
+app-dependencies-check-for-outdated:  ## 🔍 to check for outdated python dependencies
+	cd coolcover_company && uv run pip list --outdated
+
+app-dependencies-update: app-dependencies-check-for-outdated  ## ⬆️ to update python dependencies
+	echo "[*] Updating python dependencies ..."
+	cd coolcover_company && uv sync --upgrade && uv lock
+	echo "[*] Python dependencies updated."
 
 .PHONY: app-lint  ## 🔍 to lint the python codebase
-app-lint: app-dependencies
+app-lint: app-dependencies-install app-format
 	cd coolcover_company && uv run ruff check --fix .
 
+.PHONY: app-format  ## 🎨 to format the python codebase
+app-format:
+	cd coolcover_company && uv run ruff format
+
 .PHONY: app-start  ## 🚀 to start the FastAPI application
-app-start: app-lint
+app-start: app-dependencies-install app-lint
 	cd coolcover_company && uv run uvicorn coolcover_company.main:app --reload
 
 app-start-check: PORT:=8000
