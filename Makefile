@@ -13,14 +13,16 @@ MAKEFLAGS += --silent
 
 .PHONY: help ## 🛟 to display this prompts. This will list all available targets with their documentation
 help:
-	{
-	echo "❓ Use 'make <target>' where <target> is one of 👇"
+	@{
+	output=$$(echo "❓ Use 'make <target>' where <target> is one of 👇"; \
 	grep -E '^\.PHONY: [a-zA-Z0-9_-]+ .*?##' $(MAKEFILE_LIST) | sort | \
-		awk 'BEGIN {FS = "(: |##)"}; {printf "\033[36m%-30s\033[0m %s\n", $$2, $$3}'
-	echo "Tips 💡"
-	echo "	- use tab for auto-completion"
-	echo "	- use the dry run option '-n' to show what make is attempting to do. example: 'make -n help'"
-	} | tee /dev/tty | freeze -c full -o docs/available-commands.png
+		awk 'BEGIN {FS = "(: |##)"}; {printf "\033[36m%-30s\033[0m %s\n", $$2, $$3}'; \
+	echo "Tips 💡"; \
+	echo "	- use tab for auto-completion"; \
+	echo "	- use the dry run option '-n' to show what make is attempting to do. example: 'make -n help'")
+	echo "$${output}"
+	echo "$${output}" | freeze -c full -o docs/available-commands.png >/dev/null 2>&1 &
+	}
 
 .PHONY: backing-services-start  ## 🔌 to start all the services consumed by our components through the network (aka backing services https://12factor.net/backing-services)
 backing-services-start:
@@ -46,13 +48,19 @@ database-documentation: POSTGRES_PASSWORD:=toto
 database-documentation: POSTGRES_PORT:=5432
 database-documentation: backing-services-start
 	echo "[*] Generating database documentation with SchemaSpy based on ${POSTGRES_HOST} > ${POSTGRES_DB} db..."
+	echo "[*][*] Waiting for database to be ready ..."
+	@for i in 1 2 3 4 5; do \
+		docker exec my_local_postgresql pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} && break || sleep 2; \
+	done
 	echo "[*][*] Cleaning the slate @ file://$(CURDIR)/docs/schemaspy/docs/* ..."
-	rm -rf $(CURDIR)/docs/schemaspy/docs/*
+	rm -rf $(CURDIR)/docs/schemaspy/docs
+	mkdir -p $(CURDIR)/docs/schemaspy/docs
+	chmod 777 $(CURDIR)/docs/schemaspy/docs
 	echo "[*][*] Generating file://$(CURDIR)/docs/schemaspy/schemaspy.properties file ..."
 	envsubst < ./docs/schemaspy/schemaspy.properties.template > ./docs/schemaspy/schemaspy.properties
 	docker run --rm \
-		-v "./docs/schemaspy/docs/:/output:z" \
-		-v "./docs/schemaspy:/config" \
+		-v "$(CURDIR)/docs/schemaspy/docs/:/output:z" \
+		-v "$(CURDIR)/docs/schemaspy:/config" \
 		--network="host" \
 		schemaspy/schemaspy:${SCHEMASPY_VERSION} -configFile /config/schemaspy.properties -noimplied -nopages -loglevel severe \
 			| sed 's,^,[🕵️ SchemaSpy] - ,'
