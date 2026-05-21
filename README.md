@@ -18,12 +18,12 @@ A companion repo to my blog article
 
 ## Requirements
 
-- 📸 [charmbracelet/freeze](https://github.com/charmbracelet/freeze) : to create documentation from commands output
-- ⛳️ [GNU tee](https://tldr.inbrowser.app/pages/common/tee) : to pipe some logs in both STDOUT and other CLI tools (such as Freeze)
-- 🐳 [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/) : to run containers locally
-- 🐍 [Python](https://www.python.org/downloads/) : to run the sample FastAPI app and consult the dynamic OpenAPI (living) documentation
-  - Take a look at [pyproject.toml](./coolcover_company/pyproject.toml) file to know what Python version is needed
-- ⚡️ [uv](https://docs.astral.sh/uv/) : to handle Python dependency management
+- System requirements can be installed with mise
+  - See https://mise.jdx.dev/ for installation
+  - run `make help` to know how to install them with `mise`
+- 🐳 A container engine in necessary, like
+  - [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/) : to run containers locally
+  - or [Podman](https://podman.io/), an alias `alias docker=podman` works perfectly fine with the Makefile
 
 ## Getting started
 

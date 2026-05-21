@@ -69,8 +69,48 @@ database-documentation: backing-services-start
 	echo "[*][*] Schema copied for versioning @ file://$(CURDIR)/docs/database/ ..."
 	$(MAKE) backing-services-stop
 
+.PHONY: check-setup  ## 🔍 to check that mise is installed and all system dependencies are available
+check-setup:
+	@{
+		failed=0;
+		echo "[*] Checking system dependencies ...";
+		if command -v mise >/dev/null 2>&1; then
+			echo "  ✅ mise";
+		else
+			echo "  ❌ mise — not installed. See README.md";
+			failed=1;
+		fi;
+		if command -v mise >/dev/null 2>&1; then
+			while IFS= read -r line; do
+				name=$$(echo "$$line" | awk '{print $$1}');
+				version=$$(echo "$$line" | awk '{print $$2}');
+				if echo "$$line" | grep -q '(missing)'; then
+					echo "  ❌ $$name — not installed";
+					failed=1;
+				else
+					echo "  ✅ $$name ($$version)";
+				fi;
+			done < <(mise list --current);
+		fi;
+		if command -v docker >/dev/null 2>&1 || command -v podman >/dev/null 2>&1; then
+			echo "  ✅ docker/podman";
+		else
+			echo "  ❌ docker/podman — not installed";
+			failed=1;
+		fi;
+		if [ $$failed -ne 0 ]; then
+			echo "[!] Some dependencies are missing. Run 'make system-dependencies-install' for mise tools.";
+			exit 1;
+		fi;
+		echo "[*] All dependencies are available.";
+	}
+
+.PHONY: system-dependencies-install  ## ⬇️ to install system dependencies
+system-dependencies-install:
+	mise install && mise list --current
+
 .PHONY: app-dependencies-install  ## ⬇️ to download python dependencies
-app-dependencies-install:
+app-dependencies-install: system-dependencies-install
 	cd coolcover_company && uv sync && uv lock
 
 app-dependencies-check-for-outdated:  ## 🔍 to check for outdated python dependencies
