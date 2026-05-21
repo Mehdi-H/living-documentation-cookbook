@@ -152,7 +152,7 @@ data-contracts-documentation:
 	echo "[*] Data contracts documentation generated @ file://$(CURDIR)/docs/data_contracts/generated_docs/Departments/department_specification.html ..."
 
 .PHONY: all-docs  ## 🪄📚 to generate all documentation artifacts at once
-all-docs: help database-documentation data-contracts-documentation app-start-check rest-api-documentation
+all-docs: system-dependencies-install help database-documentation data-contracts-documentation app-start-check rest-api-documentation
 	echo "[*] All done!"
 
 .PHONY: rest-api-documentation  ## 🌐📜 to generate documentation for the web rest API
