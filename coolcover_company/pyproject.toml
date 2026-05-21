@@ -20,6 +20,9 @@ dev = [
     "ruff<1.0",
     "setuptools>=82.0.0",
 ]
+claude-md-autoupdate = [
+    "mdformat>=1.0",
+]
 
 [build-system]
 requires = ["hatchling"]

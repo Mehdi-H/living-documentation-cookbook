@@ -69,6 +69,16 @@ database-documentation: backing-services-start
 	echo "[*][*] Schema copied for versioning @ file://$(CURDIR)/docs/database/ ..."
 	$(MAKE) backing-services-stop
 
+.PHONY: claude-md-validate  ## 🔍 to validate the CLAUDE.md generator configuration
+claude-md-validate:
+	cd coolcover_company && uv run --group claude-md-autoupdate python ../claude-md-autoupdate/generate_claude_md.py validate
+
+.PHONY: claude-md  ## 🤖📜 to generate CLAUDE.md from configured sources of truth
+claude-md: claude-md-validate
+	cd coolcover_company && uv run --group claude-md-autoupdate python ../claude-md-autoupdate/generate_claude_md.py all
+
+CLAUDE.md:claude-md
+
 .PHONY: check-setup  ## 🔍 to check that mise is installed and all system dependencies are available
 check-setup:
 	@{
@@ -96,6 +106,12 @@ check-setup:
 			echo "  ✅ docker/podman";
 		else
 			echo "  ❌ docker/podman — not installed";
+			failed=1;
+		fi;
+		if command -v tree >/dev/null 2>&1; then
+			echo "  ✅ tree ($(shell tree --version | head -1))";
+		else
+			echo "  ❌ tree — not installed. Run: brew install tree";
 			failed=1;
 		fi;
 		if [ $$failed -ne 0 ]; then

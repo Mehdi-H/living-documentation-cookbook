@@ -1,0 +1,55 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(/CLAUDE.md)",
+      "Edit(.claude/CLAUDE.md)",
+      "Edit(**/CLAUDE.md)",
+      "Write(/CLAUDE.md)",
+      "Write(.claude/CLAUDE.md)",
+      "Write(**/CLAUDE.md)",
+      "Bash(rm *CLAUDE.md*)",
+      "Bash(mv *CLAUDE.md*)",
+      "Bash(cp * *CLAUDE.md*)",
+      "Bash(sed * *CLAUDE.md*)",
+      "Bash(awk * *CLAUDE.md*)",
+      "Bash(tee * *CLAUDE.md*)",
+      "Bash(dd * *CLAUDE.md*)",
+      "Bash(truncate *CLAUDE.md*)",
+      "Bash(> *CLAUDE.md*)",
+      "Bash(>> *CLAUDE.md*)",
+      "Bash(echo * > *CLAUDE.md*)",
+      "Bash(echo * >> *CLAUDE.md*)",
+      "Bash(cat * > *CLAUDE.md*)",
+      "Bash(python*CLAUDE.md*)",
+      "Bash(node*CLAUDE.md*)",
+      "Bash(perl*CLAUDE.md*)",
+      "Bash(ruby*CLAUDE.md*)"
+    ]
+  },
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/protect-claude-md.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "make claude-md",
+            "timeout": 10,
+            "statusMessage": "Regenerating CLAUDE.md..."
+          }
+        ]
+      }
+    ]
+  }
+}
