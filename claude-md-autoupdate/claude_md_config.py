@@ -20,6 +20,11 @@ PARTS = [
         "source": "python claude-md-autoupdate/parts/tree_with_annotations.py",
         "format": "code",
     },
+    {
+        "title": "Stack technique",
+        "source_type": "command",
+        "source": "python claude-md-autoupdate/parts/stack_technique.py",
+    },
 ]
 
 OUTPUT_PATH = "CLAUDE.md"

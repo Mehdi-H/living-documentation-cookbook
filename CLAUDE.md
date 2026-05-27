@@ -45,6 +45,7 @@ Tips 💡
 ├── claude-md-autoupdate  # Automated CLAUDE.md generator, living documentation with configurable parts
 │   ├── parts
 │   │   ├── repo_tldr.md
+│   │   ├── stack_technique.py
 │   │   └── tree_with_annotations.py
 │   ├── claude_md_config.py
 │   └── generate_claude_md.py
@@ -78,7 +79,16 @@ Tips 💡
 ├── README.md
 └── mise.toml
 
-16 directories, 24 files
+16 directories, 25 files
 ```
 
 > *Cette section a été générée automatiquement à partir de : `python claude-md-autoupdate/parts/tree_with_annotations.py`.*
+
+## Stack technique
+
+- Python: 3.14.5
+- uv: 0.11.15
+- freeze: 0.2.2
+- mise-make: 4.4.1
+
+> *Cette section a été générée automatiquement à partir de : `python claude-md-autoupdate/parts/stack_technique.py`.*
